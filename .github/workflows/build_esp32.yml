@@ -21,10 +21,11 @@ jobs:
           arduino-cli core update-index --additional-urls https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
           arduino-cli core install esp32:esp32 --additional-urls https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
 
-      - name: Install Required Libraries
+      - name: Install Compatible Libraries
         run: |
-          arduino-cli lib install "ESPAsyncWebServer"
           arduino-cli lib install "ArduinoJson"
+          git clone https://github.com/ESP32Async/ESPAsyncWebServer.git /home/runner/Arduino/libraries/ESPAsyncWebServer
+          git clone https://github.com/ESP32Async/AsyncTCP.git /home/runner/Arduino/libraries/AsyncTCP
 
       - name: Compile Sketch (.bin)
         run: |
