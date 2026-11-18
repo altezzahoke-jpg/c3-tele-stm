@@ -242,59 +242,111 @@ const char* htmlUI = R"rawliteral(
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TEAM PATAS KUDUS - ECU TUNER & LOGGER</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@600;700&display=swap');
-  body { font-family: 'Rajdhani', sans-serif; background: #0a0a0c; color: #fff; margin: 0; padding: 0; }
-  .marquee-box { background: linear-gradient(90deg, #ff0055, #00ff87, #00e5ff, #ff0055); padding: 3px 0; }
-  .marquee-inner { background: #000; overflow: hidden; white-space: nowrap; padding: 6px 0; }
-  .marquee-text { display: inline-block; font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700; color: #00ff87; text-transform: uppercase; animation: marquee 16s linear infinite; }
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap');
+  :root {
+    --bg-main: #070709;
+    --bg-card: rgba(18, 18, 24, 0.75);
+    --border-color: rgba(0, 255, 135, 0.2);
+    --neon-green: #00ff87;
+    --neon-cyan: #00e5ff;
+    --neon-pink: #ff0055;
+    --neon-yellow: #ffea00;
+    --text-main: #f0f0f5;
+    --text-muted: #8a8a9e;
+  }
+  body { font-family: 'Rajdhani', sans-serif; background: var(--bg-main); color: var(--text-main); margin: 0; padding: 0; overflow-x: hidden; }
+  
+  /* Marquee Top */
+  .marquee-box { background: linear-gradient(90deg, #ff0055, #00ff87, #00e5ff, #ff0055); padding: 2px 0; box-shadow: 0 0 15px rgba(0,255,135,0.3); }
+  .marquee-inner { background: #000; overflow: hidden; white-space: nowrap; padding: 5px 0; }
+  .marquee-text { display: inline-block; font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700; color: var(--neon-green); text-transform: uppercase; animation: marquee 18s linear infinite; letter-spacing: 1px; }
   @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-  .header { text-align: center; padding: 15px 10px 5px 10px; }
-  .header h1 { font-family: 'Orbitron', sans-serif; font-size: 24px; margin: 0; color: #fff; text-shadow: 0 0 10px #00ff87; }
-  .status-bar { display: flex; justify-content: space-between; align-items: center; background: #111; padding: 8px 12px; border-radius: 6px; margin-bottom: 10px; font-family: 'Orbitron'; font-size: 11px; border: 1px solid #222; }
-  .ecu-online { color: #00ff87; font-weight: bold; text-shadow: 0 0 5px #00ff87; }
-  .ecu-offline { color: #ff0055; font-weight: bold; text-shadow: 0 0 5px #ff0055; animation: blink 1s infinite; }
-  @keyframes blink { 50% { opacity: 0.3; } }
-  .fault-banner { background: rgba(255, 0, 85, 0.2); border: 1px solid #ff0055; color: #ff3366; padding: 8px; border-radius: 6px; margin-bottom: 10px; font-family: 'Orbitron', sans-serif; font-size: 11px; text-align: center; display: none; font-weight: bold; }
+
+  .header { text-align: center; padding: 12px 10px 4px 10px; }
+  .header h1 { font-family: 'Orbitron', sans-serif; font-size: 22px; margin: 0; color: #fff; text-shadow: 0 0 12px rgba(0,255,135,0.6); letter-spacing: 2px; }
+
   .container { max-width: 650px; margin: 0 auto; padding: 10px; }
-  .card { background: rgba(20, 20, 25, 0.85); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 10px; padding: 12px; margin-bottom: 12px; }
-  .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  label { font-family: 'Orbitron', sans-serif; font-size: 11px; color: #888; display: block; margin-bottom: 5px; }
-  select, input[type=number].cfg { width: 100%; box-sizing: border-box; background: #050508; color: #00ff87; border: 1px solid #222; padding: 8px; font-family: 'Orbitron', sans-serif; font-size: 13px; border-radius: 6px; }
+
+  /* Status Bar Modern */
+  .status-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(12, 12, 18, 0.9); padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; font-family: 'Orbitron', sans-serif; font-size: 11px; border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+  .ecu-online { color: var(--neon-green); font-weight: 700; text-shadow: 0 0 8px rgba(0,255,135,0.7); }
+  .ecu-offline { color: var(--neon-pink); font-weight: 700; text-shadow: 0 0 8px rgba(255,0,85,0.7); animation: blink 1s infinite; }
+  @keyframes blink { 50% { opacity: 0.3; } }
+
+  .fault-banner { background: rgba(255, 0, 85, 0.15); border: 1px solid var(--neon-pink); color: #ff3366; padding: 8px; border-radius: 8px; margin-bottom: 12px; font-family: 'Orbitron', sans-serif; font-size: 11px; text-align: center; display: none; font-weight: bold; box-shadow: 0 0 10px rgba(255,0,85,0.3); }
+
+  /* Navigation Tabs */
   .tab-buttons { display: flex; gap: 6px; margin-bottom: 12px; }
-  .tab-btn { flex: 1; background: #111; border: 1px solid #333; color: #aaa; padding: 8px 4px; font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 700; border-radius: 6px; cursor: pointer; text-align: center; }
-  .tab-btn.active { background: linear-gradient(180deg, #00ff87, #009951); color: #000; border-color: #00ff87; }
-  .chart-card { background: #050508; border: 1px solid #222; border-radius: 8px; padding: 10px; margin-bottom: 12px; }
-  .chart-title { font-family: 'Orbitron', sans-serif; font-size: 11px; color: #00e5ff; text-align: center; margin-bottom: 6px; }
-  .table-responsive { overflow-x: auto; margin-bottom: 15px; border-radius: 8px; border: 1px solid #222; max-height: 350px; }
-  table { width: 100%; border-collapse: collapse; background: #08080c; }
-  th, td { border: 1px solid #1a1a24; padding: 6px 4px; text-align: center; font-size: 12px; }
-  th { background: #12121a; color: #00e5ff; font-family: 'Orbitron', sans-serif; font-size: 10px; position: sticky; top: 0; z-index: 2; }
-  input.cell { width: 42px; background: #000; color: #00ff87; border: 1px solid #222; text-align: center; padding: 5px 1px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 14px; border-radius: 4px; transition: 0.2s; }
-  input.cell.cell-drop { background: #550011 !important; color: #ff3366 !important; border-color: #ff0055 !important; box-shadow: 0 0 8px #ff0055; }
-  input.cell.cell-active { background: #00ff87 !important; color: #000 !important; font-weight: 900; box-shadow: 0 0 12px #00ff87; }
-  input.dwell-cell { color: #00e5ff; width: 75px; }
-  .quick-adj-bar { display: flex; gap: 10px; margin-bottom: 12px; background: #111; padding: 8px; border-radius: 8px; border: 1px solid #222; align-items: center; justify-content: space-around; }
-  .btn-adj { background: #222; border: 1px solid #00e5ff; color: #00e5ff; font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 14px; padding: 6px 16px; border-radius: 6px; cursor: pointer; }
-  .btn-adj:active { background: #00e5ff; color: #000; }
-  .tr-alert { background: rgba(255, 0, 85, 0.25) !important; color: #ff3366 !important; font-weight: bold; }
-  .btn-save { background: linear-gradient(135deg, #ff0055, #ff5500); color: #fff; font-family: 'Orbitron', sans-serif; font-weight: 900; border: none; padding: 14px 20px; font-size: 14px; border-radius: 8px; cursor: pointer; width: 100%; letter-spacing: 2px; margin-bottom: 10px; text-transform: uppercase; }
-  .btn-log { background: linear-gradient(135deg, #00e5ff, #0077ff); color: #fff; font-family: 'Orbitron', sans-serif; font-weight: 900; border: none; padding: 12px 20px; font-size: 12px; border-radius: 8px; cursor: pointer; width: 100%; display: block; text-align: center; text-decoration: none; box-sizing: border-box; margin-bottom: 8px; }
-  .btn-clear { background: #333; color: #ccc; font-family: 'Orbitron', sans-serif; font-weight: 700; border: 1px solid #444; padding: 10px 20px; font-size: 11px; border-radius: 8px; cursor: pointer; width: 100%; text-align: center; box-sizing: border-box; }
+  .tab-btn { flex: 1; background: rgba(20,20,28,0.9); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); padding: 10px 4px; font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 700; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; }
+  .tab-btn:hover { border-color: var(--neon-cyan); color: #fff; }
+  .tab-btn.active { background: linear-gradient(135deg, rgba(0,255,135,0.2), rgba(0,229,255,0.2)); color: var(--neon-green); border-color: var(--neon-green); box-shadow: 0 0 12px rgba(0,255,135,0.25); }
+
+  /* Cards */
+  .card { background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  label { font-family: 'Orbitron', sans-serif; font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 6px; letter-spacing: 1px; }
+  select, input[type=number].cfg { width: 100%; box-sizing: border-box; background: #040406; color: var(--neon-green); border: 1px solid rgba(255,255,255,0.12); padding: 9px; font-family: 'Orbitron', sans-serif; font-size: 12px; border-radius: 8px; outline: none; transition: 0.2s; }
+  select:focus, input.cfg:focus { border-color: var(--neon-green); box-shadow: 0 0 8px rgba(0,255,135,0.3); }
+
+  /* RACING LIVE GAUGES & BARS */
+  .gauge-container { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; margin: 10px 0; }
+  .circular-gauge { position: relative; width: 180px; height: 180px; border-radius: 50%; background: conic-gradient(#00ff87 0deg, #00e5ff 0deg, #161622 0deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(0,255,135,0.2), inset 0 0 20px rgba(0,0,0,0.9); transition: background 0.1s linear; }
+  .circular-gauge::before { content: ''; position: absolute; width: 145px; height: 145px; background: #0b0b10; border-radius: 50%; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+  .gauge-inner-content { position: relative; z-index: 2; text-align: center; }
+  .gauge-title { font-family: 'Orbitron', sans-serif; font-size: 10px; color: var(--text-muted); letter-spacing: 2px; }
+  .gauge-value { font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 900; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+  .gauge-unit { font-family: 'Orbitron', sans-serif; font-size: 10px; color: var(--neon-green); font-weight: bold; }
+
+  /* Racing Bar Styles */
+  .racing-bar-wrapper { background: rgba(10,10,14,0.9); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; }
+  .racing-bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-family: 'Orbitron', sans-serif; font-size: 11px; }
+  .racing-bar-track { background: #161622; height: 10px; border-radius: 5px; overflow: hidden; position: relative; box-shadow: inset 0 2px 4px rgba(0,0,0,0.8); }
+  .racing-bar-fill { height: 100%; width: 0%; border-radius: 5px; transition: width 0.1s ease-out; box-shadow: 0 0 10px currentColor; }
+
+  /* Charts & Tables */
+  .chart-card { background: rgba(5,5,8,0.9); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px; margin-bottom: 12px; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
+  .chart-title { font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--neon-cyan); text-align: center; margin-bottom: 8px; letter-spacing: 1px; }
+  
+  .table-responsive { overflow-x: auto; margin-bottom: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); max-height: 350px; background: rgba(8,8,12,0.9); }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border: 1px solid rgba(255,255,255,0.05); padding: 8px 6px; text-align: center; font-size: 13px; }
+  th { background: #12121a; color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; font-size: 10px; position: sticky; top: 0; z-index: 2; letter-spacing: 1px; }
+  
+  input.cell { width: 44px; background: #020204; color: var(--neon-green); border: 1px solid rgba(255,255,255,0.1); text-align: center; padding: 6px 2px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 14px; border-radius: 6px; transition: 0.2s; outline: none; }
+  input.cell:focus { border-color: var(--neon-cyan); box-shadow: 0 0 8px rgba(0,229,255,0.4); }
+  input.cell.cell-drop { background: rgba(255,0,85,0.2) !important; color: #ff3366 !important; border-color: var(--neon-pink) !important; box-shadow: 0 0 8px var(--neon-pink); }
+  input.cell.cell-active { background: var(--neon-green) !important; color: #000 !important; font-weight: 900; box-shadow: 0 0 12px var(--neon-green); }
+  input.dwell-cell { color: var(--neon-cyan); width: 80px; }
+
+  /* Quick Adjustment Bar */
+  .quick-adj-bar { display: flex; gap: 8px; margin-bottom: 12px; background: rgba(16,16,24,0.9); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); align-items: center; justify-content: space-around; }
+  .btn-adj { background: #1a1a26; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 12px; padding: 8px 14px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+  .btn-adj:active, .btn-adj:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 10px rgba(0,229,255,0.5); }
+
+  .tr-alert { background: rgba(255, 0, 85, 0.2) !important; color: #ff3366 !important; font-weight: bold; }
+  
+  /* Action Buttons */
+  .btn-save { background: linear-gradient(135deg, var(--neon-pink), #ff5500); color: #fff; font-family: 'Orbitron', sans-serif; font-weight: 900; border: none; padding: 14px 20px; font-size: 13px; border-radius: 10px; cursor: pointer; width: 100%; letter-spacing: 2px; margin-bottom: 10px; text-transform: uppercase; box-shadow: 0 4px 20px rgba(255,0,85,0.4); transition: 0.2s; }
+  .btn-save:hover { filter: brightness(1.1); box-shadow: 0 6px 25px rgba(255,0,85,0.6); }
+
+  .btn-log { background: linear-gradient(135deg, var(--neon-cyan), #0077ff); color: #fff; font-family: 'Orbitron', sans-serif; font-weight: 900; border: none; padding: 12px 20px; font-size: 12px; border-radius: 10px; cursor: pointer; width: 100%; display: block; text-align: center; text-decoration: none; box-sizing: border-box; margin-bottom: 8px; box-shadow: 0 4px 15px rgba(0,229,255,0.3); }
+  .btn-clear { background: #1a1a26; color: #ccc; font-family: 'Orbitron', sans-serif; font-weight: 700; border: 1px solid rgba(255,255,255,0.1); padding: 10px 20px; font-size: 11px; border-radius: 10px; cursor: pointer; width: 100%; text-align: center; box-sizing: border-box; transition: 0.2s; }
+  .btn-clear:hover { background: #2a2a38; color: #fff; }
 </style>
 </head><body>
 
-<div class="marquee-box"><div class="marquee-inner"><div class="marquee-text">🏁 TEAM PATAS KUDUS SATRIA CLUB — TCI IGNITION MAP — CUSTOM TUNING SYSTEM — 🏁</div></div></div>
+<div class="marquee-box"><div class="marquee-inner"><div class="marquee-text">🏁 TEAM PATAS KUDUS SATRIA CLUB — TCI IGNITION MAP — RACING TELEMETRY SYSTEM — 🏁</div></div></div>
 <div class="header"><h1>TEAM PATAS KUDUS</h1></div>
 <div class="container">
   
   <div class="status-bar">
-    <span>KONEKSI ECU (UART): <span id="ecuStatus" class="ecu-offline">MENGECEK...</span></span>
-    <span>LIVE RPM: <span id="liveRpm" style="color:#00ff87;">0</span></span>
+    <span>KONEKSI ECU: <span id="ecuStatus" class="ecu-offline">MENGECEK...</span></span>
+    <span>RPM: <span id="liveRpmTop" style="color:var(--neon-green); font-weight:bold;">0</span></span>
   </div>
 
   <div id="faultBanner" class="fault-banner"></div>
 
-  <!-- MENU UTAMA / TAB NAVIGASI -->
+  <!-- TAB NAVIGASI UTAMA -->
   <div class="tab-buttons">
     <button class="tab-btn active" id="btnTabLive" onclick="switchMainTab('live')">LIVE MONITOR</button>
     <button class="tab-btn" id="btnTabDegree" onclick="switchMainTab('degree')">MAP 3D</button>
@@ -302,36 +354,78 @@ const char* htmlUI = R"rawliteral(
     <button class="tab-btn" id="btnTabLogger" onclick="switchMainTab('logger')">LOGGER</button>
   </div>
 
-  <!-- 1. TAB KHUSUS LIVE MONITORING & RUNNING CHART -->
+  <!-- 1. TAB LIVE MONITORING & RACING GAUGES -->
   <div id="liveSection">
-    <div class="card" style="border-color: #00e5ff;">
-      <div class="chart-title">LIVE ENGINE TELEMETRY GAUGE</div>
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; text-align: center; margin-bottom: 12px;">
-        <div style="background:#050508; padding:8px; border-radius:6px; border:1px solid #222;">
-          <span style="font-size:9px; color:#888;">ADV. DEGREE</span>
-          <div id="liveDeg" style="font-family:'Orbitron'; font-size:18px; color:#00ff87;">0.0°</div>
-        </div>
-        <div style="background:#050508; padding:8px; border-radius:6px; border:1px solid #222;">
-          <span style="font-size:9px; color:#888;">TPS POSITION</span>
-          <div id="liveTps" style="font-family:'Orbitron'; font-size:18px; color:#00e5ff;">0%</div>
-        </div>
-        <div style="background:#050508; padding:8px; border-radius:6px; border:1px solid #222;">
-          <span style="font-size:9px; color:#888;">SUHU NTC</span>
-          <div id="liveTemp" style="font-family:'Orbitron'; font-size:18px; color:#ffea00;">0°C</div>
-        </div>
-        <div style="background:#050508; padding:8px; border-radius:6px; border:1px solid #222;">
-          <span style="font-size:9px; color:#888;">BATT VOLTAGE</span>
-          <div id="liveBatt" style="font-family:'Orbitron'; font-size:18px; color:#ff0055;">0.0V</div>
+    <!-- Circular RPM Gauge Card -->
+    <div class="card" style="border-color: var(--neon-green); text-align: center;">
+      <div class="chart-title">ENGINE SPEED GAUGE</div>
+      <div class="gauge-container">
+        <div class="circular-gauge" id="rpmCircularGauge">
+          <div class="gauge-inner-content">
+            <div class="gauge-title">RPM</div>
+            <div class="gauge-value" id="gaugeRpmVal">0</div>
+            <div class="gauge-unit">RPM</div>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- Racing Bars for Parameters -->
+    <div class="card">
+      <div class="chart-title" style="margin-bottom: 12px;">RACING PARAMETER BARS</div>
+      
+      <!-- Advance Degree Bar (0 - 45 deg) -->
+      <div class="racing-bar-wrapper">
+        <div class="racing-bar-header">
+          <span style="color: var(--text-muted);">ADVANCE DEGREE</span>
+          <span id="barDegVal" style="color: var(--neon-green); font-weight: bold;">0.0°</span>
+        </div>
+        <div class="racing-bar-track">
+          <div class="racing-bar-fill" id="barDegFill" style="background-color: var(--neon-green);"></div>
+        </div>
+      </div>
+
+      <!-- TPS Position Bar (0 - 100 %) -->
+      <div class="racing-bar-wrapper">
+        <div class="racing-bar-header">
+          <span style="color: var(--text-muted);">TPS POSITION</span>
+          <span id="barTpsVal" style="color: var(--neon-cyan); font-weight: bold;">0%</span>
+        </div>
+        <div class="racing-bar-track">
+          <div class="racing-bar-fill" id="barTpsFill" style="background-color: var(--neon-cyan);"></div>
+        </div>
+      </div>
+
+      <!-- NTC Temp Bar (0 - 120 °C) -->
+      <div class="racing-bar-wrapper">
+        <div class="racing-bar-header">
+          <span style="color: var(--text-muted);">SUHU ENGINE (NTC)</span>
+          <span id="barTempVal" style="color: var(--neon-yellow); font-weight: bold;">0.0°C</span>
+        </div>
+        <div class="racing-bar-track">
+          <div class="racing-bar-fill" id="barTempFill" style="background-color: var(--neon-yellow);"></div>
+        </div>
+      </div>
+
+      <!-- Battery Voltage Bar (9.0V - 16.0V) -->
+      <div class="racing-bar-wrapper">
+        <div class="racing-bar-header">
+          <span style="color: var(--text-muted);">BATT VOLTAGE</span>
+          <span id="barBattVal" style="color: var(--neon-pink); font-weight: bold;">0.0V</span>
+        </div>
+        <div class="racing-bar-track">
+          <div class="racing-bar-fill" id="barBattFill" style="background-color: var(--neon-pink);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Realtime Rolling Chart -->
     <div class="chart-card">
-      <div class="chart-title">REAL-TIME ROLLING CHART (RPM & ADVANCE)</div>
-      <canvas id="realtimeChart" style="width:100%; height:180px;"></canvas>
-      <div style="display:flex; justify-content:space-around; font-size:10px; font-family:'Orbitron'; margin-top:6px; color:#aaa;">
-        <span style="color:#00ff87;">■ RPM (Skala Max 15k)</span>
-        <span style="color:#00e5ff;">■ ADVANCE DEG (Skala Max 45°)</span>
+      <div class="chart-title">REAL-TIME ROLLING TELEMETRY CHART</div>
+      <canvas id="realtimeChart" style="width:100%; height:160px;"></canvas>
+      <div style="display:flex; justify-content:space-around; font-size:10px; font-family:'Orbitron'; margin-top:6px; color:var(--text-muted);">
+        <span style="color:var(--neon-green);">■ RPM (Max 15k)</span>
+        <span style="color:var(--neon-cyan);">■ ADVANCE (Max 45°)</span>
       </div>
     </div>
   </div>
@@ -358,16 +452,16 @@ const char* htmlUI = R"rawliteral(
     </div>
 
     <div class="quick-adj-bar">
-      <span style="font-size:11px; color:#aaa; font-family:'Orbitron';">KOREKSI CEPAT:</span>
-      <button class="btn-adj" onclick="adjustSelectedCell(-10)">- 1.0&deg;</button>
-      <button class="btn-adj" onclick="adjustSelectedCell(-5)">- 0.5&deg;</button>
-      <button class="btn-adj" onclick="adjustSelectedCell(5)">+ 0.5&deg;</button>
-      <button class="btn-adj" onclick="adjustSelectedCell(10)">+ 1.0&deg;</button>
+      <span style="font-size:10px; color:var(--text-muted); font-family:'Orbitron';">KOREKSI:</span>
+      <button class="btn-adj" onclick="adjustSelectedCell(-10)">-1.0°</button>
+      <button class="btn-adj" onclick="adjustSelectedCell(-5)">-0.5°</button>
+      <button class="btn-adj" onclick="adjustSelectedCell(5)">+0.5°</button>
+      <button class="btn-adj" onclick="adjustSelectedCell(10)">+1.0°</button>
     </div>
 
     <div class="tab-buttons" style="margin-bottom: 8px;">
       <button class="tab-btn active" id="subBtnDegree" onclick="switchSubTab('degree')">MAP DERAJAT</button>
-      <button class="tab-btn" id="subBtnDwell" onclick="switchSubTab('dwell')">DWELL PER STEP</button>
+      <button class="tab-btn" id="subBtnDwell" onclick="switchSubTab('dwell')">DWELL TIME</button>
     </div>
 
     <div class="chart-card">
@@ -395,8 +489,8 @@ const char* htmlUI = R"rawliteral(
   <!-- 3. TAB DATA LOGGER -->
   <div id="loggerSection" style="display:none;">
     <div class="card" style="text-align: center;">
-      <label style="color: #00e5ff; margin-bottom: 5px;">RIWAYAT REKAMAN DATA MESIN</label>
-      <div id="overflowBadge" style="display:none; color:#ff9100; font-size:11px; margin-bottom:10px;">⚠️ RAM BUFFER MELUBER (LOG LAMA TERTIMPA)</div>
+      <label style="color: var(--neon-cyan); margin-bottom: 6px;">RIWAYAT REKAMAN DATA MESIN</label>
+      <div id="overflowBadge" style="display:none; color:#ff9100; font-size:11px; margin-bottom:10px; font-family:'Orbitron';">⚠️ RAM BUFFER MELUBER (LOG LAMA TERTIMPA)</div>
       <button class="btn-log" onclick="fetchLiveDataLog()" style="margin-bottom: 10px;">MUAT ULANG TABEL LOG</button>
       <a href="/downloadCSV" class="btn-log">DOWNLOAD FILE CSV</a>
       <button class="btn-clear" onclick="clearLogData()">BERSIHKAN LOG</button>
@@ -406,11 +500,11 @@ const char* htmlUI = R"rawliteral(
       <table>
         <thead>
           <tr>
-            <th>Waktu (s)</th><th>RPM</th><th>TPS</th><th>Adv (&deg;)</th><th>Suhu (&deg;C)</th><th>Aki (V)</th>
+            <th>Waktu</th><th>RPM</th><th>TPS</th><th>Adv</th><th>Suhu</th><th>Aki</th>
           </tr>
         </thead>
         <tbody id="logTableBody">
-          <tr><td colspan="6" style="color: #666;">Klik "Muat Ulang Tabel Log" untuk menampilkan data.</td></tr>
+          <tr><td colspan="6" style="color: var(--text-muted);">Klik "Muat Ulang Tabel Log" untuk menampilkan data.</td></tr>
         </tbody>
       </table>
     </div>
@@ -473,26 +567,46 @@ function switchSubTab(sub) {
 function pollLiveStatus() {
   fetch('/getLiveStatus').then(r => r.json()).then(data => {
     let statusEl = document.getElementById('ecuStatus');
-    let rpmEl = document.getElementById('liveRpm');
+    let rpmTopEl = document.getElementById('liveRpmTop');
     let faultEl = document.getElementById('faultBanner');
     
     if (data.ecuOnline) {
-      statusEl.innerText = "ONLINE (STM32 CONNECTED)";
+      statusEl.innerText = "ONLINE (CONNECTED)";
       statusEl.className = "ecu-online";
     } else {
       statusEl.innerText = "OFFLINE / DISCONNECTED";
       statusEl.className = "ecu-offline";
     }
     
-    rpmEl.innerText = data.rpm;
+    let rpm = data.rpm;
+    let deg = data.deg / 10.0;
+    let tps = data.tps;
+    let temp = data.temp / 10.0;
+    let batt = data.batt / 10.0;
 
-    document.getElementById('liveDeg').innerText = (data.deg / 10).toFixed(1) + '°';
-    document.getElementById('liveTps').innerText = data.tps + '%';
-    document.getElementById('liveTemp').innerText = (data.temp / 10).toFixed(1) + '°C';
-    document.getElementById('liveBatt').innerText = (data.batt / 10).toFixed(1) + 'V';
+    rpmTopEl.innerText = rpm;
 
-    rtHistoryRpm.push(data.rpm);
-    rtHistoryDeg.push(data.deg / 10);
+    // Update Circular RPM Gauge
+    document.getElementById('gaugeRpmVal').innerText = rpm;
+    let rpmPercent = Math.min(Math.max((rpm / 15000) * 360, 0), 360);
+    document.getElementById('rpmCircularGauge').style.background = `conic-gradient(var(--neon-green) ${rpmPercent}deg, #161622 ${rpmPercent}deg)`;
+
+    // Update Racing Bars
+    document.getElementById('barDegVal').innerText = deg.toFixed(1) + '°';
+    document.getElementById('barDegFill').style.width = Math.min(Math.max((deg / 45.0) * 100, 0), 100) + '%';
+
+    document.getElementById('barTpsVal').innerText = tps + '%';
+    document.getElementById('barTpsFill').style.width = Math.min(Math.max(tps, 0), 100) + '%';
+
+    document.getElementById('barTempVal').innerText = temp.toFixed(1) + '°C';
+    document.getElementById('barTempFill').style.width = Math.min(Math.max((temp / 120.0) * 100, 0), 100) + '%';
+
+    document.getElementById('barBattVal').innerText = batt.toFixed(1) + 'V';
+    let battPercent = ((batt - 9.0) / (16.0 - 9.0)) * 100;
+    document.getElementById('barBattFill').style.width = Math.min(Math.max(battPercent, 0), 100) + '%';
+
+    rtHistoryRpm.push(rpm);
+    rtHistoryDeg.push(deg);
     if (rtHistoryRpm.length > maxHistoryPoints) {
       rtHistoryRpm.shift();
       rtHistoryDeg.shift();
@@ -508,14 +622,14 @@ function pollLiveStatus() {
       if (data.faultCode & 2) msgs.push("SENSOR SUHU NTC ERROR");
       if (data.faultCode & 4) msgs.push("AKI LOW (<10V)");
       if (data.faultCode & 8) msgs.push("OVERCHARGE / KIPROK (>16V)");
-      faultEl.innerText = "⚠️ FAULT DETECTED (LIMP HOME): " + msgs.join(" | ");
+      faultEl.innerText = "⚠️ FAULT DETECTED: " + msgs.join(" | ");
       faultEl.style.display = "block";
     } else {
       faultEl.style.display = "none";
     }
   }).catch(e => {});
 }
-setInterval(pollLiveStatus, 500);
+setInterval(pollLiveStatus, 300);
 
 function drawRealtimeChart() {
   const canvas = document.getElementById('realtimeChart');
@@ -526,7 +640,7 @@ function drawRealtimeChart() {
   const w = canvas.width; const h = canvas.height;
   
   ctx.clearRect(0, 0, w, h);
-  ctx.strokeStyle = '#1a1a24'; ctx.lineWidth = 1;
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)'; ctx.lineWidth = 1;
   
   for(let y=0; y<h; y+=h/4) {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
@@ -536,7 +650,7 @@ function drawRealtimeChart() {
 
   let stepX = w / (maxHistoryPoints - 1);
 
-  ctx.strokeStyle = '#00ff87'; ctx.lineWidth = 2; ctx.beginPath();
+  ctx.strokeStyle = 'var(--neon-green)'; ctx.lineWidth = 2; ctx.beginPath();
   for(let i = 0; i < rtHistoryRpm.length; i++) {
     let x = i * stepX;
     let y = h - ((rtHistoryRpm[i] / 15000) * h);
@@ -545,7 +659,7 @@ function drawRealtimeChart() {
   }
   ctx.stroke();
 
-  ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 1.5; ctx.beginPath();
+  ctx.strokeStyle = 'var(--neon-cyan)'; ctx.lineWidth = 1.5; ctx.beginPath();
   for(let i = 0; i < rtHistoryDeg.length; i++) {
     let x = i * stepX;
     let y = h - ((rtHistoryDeg[i] / 45.0) * h);
@@ -567,7 +681,7 @@ function fetchLiveDataLog() {
     }
 
     if (!data.logs || data.logs.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" style="color: #666;">Belum ada data log (mesin belum berputar > 400 RPM).</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" style="color: var(--text-muted);">Belum ada data log.</td></tr>';
       return;
     }
     let revLogs = data.logs.reverse();
@@ -579,12 +693,12 @@ function fetchLiveDataLog() {
       if (isTempAlert || isBattAlert) tr.classList.add('tr-alert');
       
       tr.innerHTML = `
-        <td style="color: #aaa;">${(entry.t / 1000).toFixed(1)}s</td>
-        <td style="color: #00ff87; font-weight: bold;">${entry.r}</td>
+        <td style="color: var(--text-muted);">${(entry.t / 1000).toFixed(1)}s</td>
+        <td style="color: var(--neon-green); font-weight: bold;">${entry.r}</td>
         <td>${entry.p}%</td>
-        <td style="color: #00e5ff;">${(entry.a / 10).toFixed(1)}&deg;</td>
-        <td style="${isTempAlert ? 'color:#ff0055; font-weight:900;' : ''}">${(entry.temp / 10).toFixed(1)}&deg;C</td>
-        <td style="${isBattAlert ? 'color:#ff0055; font-weight:900;' : ''}">${(entry.batt / 10).toFixed(1)}V</td>
+        <td style="color: var(--neon-cyan);">${(entry.a / 10).toFixed(1)}&deg;</td>
+        <td style="${isTempAlert ? 'color:var(--neon-pink); font-weight:900;' : ''}">${(entry.temp / 10).toFixed(1)}&deg;C</td>
+        <td style="${isBattAlert ? 'color:var(--neon-pink); font-weight:900;' : ''}">${(entry.batt / 10).toFixed(1)}V</td>
       `;
       tbody.appendChild(tr);
     });
@@ -636,7 +750,7 @@ function drawChart() {
   const padL = 30, padR = 15, padT = 15, padB = 25;
   const plotW = w - padL - padR; const plotH = h - padT - padB;
   ctx.clearRect(0, 0, w, h);
-  ctx.strokeStyle = '#1a1a24'; ctx.lineWidth = 1; ctx.fillStyle = '#666'; ctx.font = '9px Orbitron, sans-serif';
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1; ctx.fillStyle = 'var(--text-muted)'; ctx.font = '9px Orbitron, sans-serif';
   
   let currentTabIsDegree = document.getElementById('tabDegree').style.display !== 'none';
   if (currentTabIsDegree) {
@@ -651,7 +765,7 @@ function drawChart() {
       ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT + plotH); ctx.stroke();
       ctx.fillText(rpmLabels[r], x - 8, h - 5);
     }
-    const colors = ['#00e5ff', '#00ff87', '#ffea00', '#ff9100', '#ff0055'];
+    const colors = ['var(--neon-cyan)', 'var(--neon-green)', 'var(--neon-yellow)', '#ff9100', 'var(--neon-pink)'];
     for(let t = 0; t < 5; t++) {
       ctx.strokeStyle = colors[t]; ctx.lineWidth = 2; ctx.beginPath();
       for(let r = 0; r < 15; r++) {
@@ -675,7 +789,7 @@ function drawChart() {
       ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT + plotH); ctx.stroke();
       ctx.fillText(rpmLabels[r], x - 8, h - 5);
     }
-    ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 2.5; ctx.beginPath();
+    ctx.strokeStyle = 'var(--neon-cyan)'; ctx.lineWidth = 2.5; ctx.beginPath();
     for(let r = 0; r < 15; r++) {
       let el = document.getElementById(`d_${r}`);
       let val = el ? (parseInt(el.value) || 3200) : 3200;
@@ -695,7 +809,7 @@ function loadMap() {
     for(let r = 0; r < 15; r++) {
       let tr = document.createElement('tr');
       let tdRpm = document.createElement('td');
-      tdRpm.style.color = '#00e5ff'; tdRpm.innerText = rpmLabels[r]; tr.appendChild(tdRpm);
+      tdRpm.style.color = 'var(--neon-cyan)'; tdRpm.innerText = rpmLabels[r]; tr.appendChild(tdRpm);
       for(let t = 0; t < 5; t++) {
         let td = document.createElement('td');
         let val = (data.map && data.map[r]) ? data.map[r][t] : 100;
@@ -707,11 +821,11 @@ function loadMap() {
     let tbodyDwell = document.getElementById('dwellBody'); tbodyDwell.innerHTML = '';
     for(let r = 0; r < 15; r++) {
       let tr = document.createElement('tr');
-      let tdRpm = document.createElement('td'); tdRpm.style.color = '#00e5ff'; tdRpm.innerText = rpmLabels[r] + ' RPM';
+      let tdRpm = document.createElement('td'); tdRpm.style.color = 'var(--neon-cyan)'; tdRpm.innerText = rpmLabels[r] + ' RPM';
       let tdDwell = document.createElement('td');
       let dVal = (data.dwell && data.dwell[r]) ? data.dwell[r] : 3200;
       tdDwell.innerHTML = `<input type="number" class="cell dwell-cell" id="d_${r}" value="${dVal}" step="50" oninput="drawChart()">`;
-      let tdDesc = document.createElement('td'); tdDesc.style.color = '#888'; tdDesc.style.fontSize = '11px';
+      let tdDesc = document.createElement('td'); tdDesc.style.color = 'var(--text-muted)'; tdDesc.style.fontSize = '11px';
       tdDesc.innerText = r < 4 ? 'Low RPM' : (r < 10 ? 'Mid RPM' : 'High RPM');
       tr.appendChild(tdRpm); tr.appendChild(tdDwell); tr.appendChild(tdDesc); tbodyDwell.appendChild(tr);
     }
